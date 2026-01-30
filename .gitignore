@@ -1,0 +1,6 @@
+# ENV
+.venv/
+
+# Model checkpoints
+TP1/models/*.pth
+TP1/models/sam_vit_*
