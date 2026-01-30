@@ -39,4 +39,4 @@ L'application Streamlit permet de :
 
 ## Auteur
 
-[Votre nom] - TP CI Modern Computer Vision - Janvier 2026
+ZRIGA Yahia - TP CI Modern Computer Vision - Janvier 2026
