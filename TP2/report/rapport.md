@@ -81,3 +81,79 @@
 - **Strength 0.85 :** **Risqué** - Transformation trop importante, produit non reconnaissable
 
 ---
+## Exercice 5: Mini-produit Streamlit (MVP) : Text2Img + Img2Img avec paramètres
+
+### Captures d'écran
+**Text2Img mode :**
+![alt text](img/image-4.png)
+![alt text](img/image-5.png)
+
+**Img2Img mode :**
+![alt text](img/image-6.png)
+![alt text](img/image-7.png)
+
+---
+## Exercice 6: Évaluation (léger) + réflexion
+
+### Évaluations
+
+#### **Image 1 : Text2Img Baseline (run01_baseline)**
+**Configuration :** EulerA, 30 steps, guidance 7.5, seed 42
+
+**Scores :**
+- Prompt adherence : **2/2** - Handbag leather parfaitement généré selon prompt
+- Visual realism : **2/2** - Qualité photographique excellente, éclairage réaliste
+- Artifacts : **2/2** - Aucun artefact visible, surfaces nettes
+- E-commerce usability : **2/2** - Directement utilisable, fond neutre, cadrage optimal
+- Reproducibility : **2/2** - Tous paramètres documentés
+
+**Total : 10/10**
+
+**Justifications :**
+- Image de référence parfaite pour e-commerce, respect total du prompt
+- Qualité professionnelle avec éclairage studio et fond blanc clean
+- Configuration optimale (30 steps, guidance 7.5) permet reproduction exacte
+
+#### **Image 2 : Text2Img Guidance extrême (run05_guid12)**
+**Configuration :** EulerA, 30 steps, guidance 12.0, seed 42
+
+**Scores :**
+- Prompt adherence : **2/2** - Handbag bien généré mais sur-contraste
+- Visual realism : **1/2** - Sur-saturation visible, couleurs artificielles
+- Artifacts : **1/2** - Contours trop nets, sur-processing évident
+- E-commerce usability : **1/2** - Utilisable mais nécessite retouches couleur importantes
+- Reproducibility : **2/2** - Paramètres documentés
+
+**Total : 7/10**
+
+**Justifications :**
+- Guidance 12.0 crée une sur-saturation nuisible au réalisme
+- Produit reconnaissable mais rendu trop artificiel pour usage direct
+- Démontre l'importance de rester dans guidance 6.0-8.0 pour e-commerce
+
+#### **Image 3 : Img2Img strength élevé (run09_strength085)**
+**Configuration :** EulerA, 30 steps, guidance 7.5, strength 0.85, seed 42
+
+**Scores :**
+- Prompt adherence : **1/2** - Transformation trop importante, s'éloigne du produit original
+- Visual realism : **2/2** - Qualité visuelle excellente
+- Artifacts : **2/2** - Aucun artefact, rendu propre
+- E-commerce usability : **0/2** - Produit méconnaissable, inutilisable pour vente
+- Reproducibility : **2/2** - Paramètres complets
+
+**Total : 7/10**
+
+**Justifications :**
+- Strength 0.85 transforme trop le produit original (perte identité)
+- Qualité technique parfaite mais échec fonctionnel e-commerce
+- Confirme que strength > 0.7 = risque de dérive produit inacceptable
+
+### Réflexion
+
+Le **compromis qualité vs latence/coût** est déterminant en production : nos tests montrent que 15 steps donnent déjà des résultats acceptables (1.5s vs 3.5s pour 30 steps), permettant une économie de 57% de temps GPU. Le scheduler EulerA offre le meilleur rapport qualité/vitesse pour l'e-commerce, tandis que 50 steps n'apportent qu'un gain marginal pour un coût doublé. 
+
+La **reproductibilité** exige un contrôle strict : seed, model_id, scheduler, steps, guidance, et strength (img2img) sont tous nécessaires. Le moindre changement de version de diffusers ou de plateforme peut casser la reproductibilité, nécessitant un versioning rigoureux des environnements.
+
+Les **risques e-commerce** sont critiques : à strength=0.85, le handbag devient méconnaissable (faux produit), guidance>10 crée des artefacts trompeurs, et les negative prompts insuffisants génèrent logos/texte parasites. Pour limiter ces risques, j'implémenterais : validation automatique des outputs (détection logo/texte), bornes strictes sur strength (0.2-0.6), guidance (6.0-8.0), et révision humaine systématique avant publication. L'IA doit rester un outil d'aide, jamais de remplacement total du contrôle qualité e-commerce.
+
+---
