@@ -49,3 +49,35 @@
 - **EulerA :** Rendu plus naturel, transitions fluides, meilleur pour produits e-commerce
 - **DDIM :** Style légèrement différent, peut produire des variations intéressantes
 - **Performance :** Vitesse similaire (~7.8 it/s) pour 30 steps
+
+---
+## Exercice 4: Img2Img : 3 expériences contrôlées (strength faible/moyen/élevé)
+
+**Image source vs transformations :**
+
+| Image Source (baseline handbag) | Strength 0.35 (faible) |
+|---|---|
+| ![Source](../inputs/source_handbag.png) | ![Run07](../outputs/i2i_run07_strength035.png) |
+
+| Strength 0.60 (moyen) | Strength 0.85 (élevé) |
+|---|---|
+| ![Run08](../outputs/i2i_run08_strength060.png) | ![Run09](../outputs/i2i_run09_strength085.png) |
+
+**Analyse :**
+
+**Ce qui est conservé :**
+- **Strength 0.35 :** Structure générale handbag, forme principale, position globale, cadrage identique
+- **Strength 0.60 :** Silhouette reconnaissable, concept produit préservé, certaines proportions
+- **Strength 0.85 :** Notion de "sac" reste, mais forme et détails très altérés
+
+**Ce qui change :**
+- **Strength 0.35 :** Textures affinées, éclairage légèrement modifié, détails surface handbag
+- **Strength 0.60 :** Matériaux transformés (cuir -> autres textures), arrière-plan modifié, style général
+- **Strength 0.85 :** Transformation majeure : couleur, matière, forme, éclairage complètement repensés
+
+**Utilisabilité e-commerce :**
+- **Strength 0.35 :** **Optimal** - Améliore qualité sans dénaturer, garde identité produit
+- **Strength 0.60 :** **Modéré** - Variations intéressantes mais peut s'éloigner trop du produit original
+- **Strength 0.85 :** **Risqué** - Transformation trop importante, produit non reconnaissable
+
+---
