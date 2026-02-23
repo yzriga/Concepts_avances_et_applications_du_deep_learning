@@ -1,0 +1,71 @@
+{
+  "audio_path": "TP3/data/call_01.wav",
+  "model_id": "openai/whisper-small",
+  "device": "cuda",
+  "audio_duration_s": 34.968,
+  "elapsed_s": 10.149511814117432,
+  "rtf": 0.29025142456295555,
+  "segments": [
+    {
+      "segment_id": 0,
+      "start_s": 0.514,
+      "end_s": 7.454,
+      "text": "Hello, thank you for calling customer support. My name is Alex and I will help you today."
+    },
+    {
+      "segment_id": 1,
+      "start_s": 8.034,
+      "end_s": 10.654,
+      "text": "I'm calling about an order that arrived damaged."
+    },
+    {
+      "segment_id": 2,
+      "start_s": 11.138,
+      "end_s": 18.398,
+      "text": "The package was delivered yesterday, but the screen is cracked. I would like refund or replacement as soon as possible."
+    },
+    {
+      "segment_id": 3,
+      "start_s": 18.69,
+      "end_s": 20.35,
+      "text": "The order number is A."
+    },
+    {
+      "segment_id": 4,
+      "start_s": 20.514,
+      "end_s": 21.758,
+      "text": "X19."
+    },
+    {
+      "segment_id": 5,
+      "start_s": 22.05,
+      "end_s": 23.23,
+      "text": "75"
+    },
+    {
+      "segment_id": 6,
+      "start_s": 23.682,
+      "end_s": 30.43,
+      "text": "you can reach me at john.mit and example.com. Also, my phone number is 555."
+    },
+    {
+      "segment_id": 7,
+      "start_s": 31.01,
+      "end_s": 31.774,
+      "text": "0-1."
+    },
+    {
+      "segment_id": 8,
+      "start_s": 31.906,
+      "end_s": 32.51,
+      "text": "by nine."
+    },
+    {
+      "segment_id": 9,
+      "start_s": 32.802,
+      "end_s": 33.406,
+      "text": "Thank you."
+    }
+  ],
+  "full_text": "Hello, thank you for calling customer support. My name is Alex and I will help you today. I'm calling about an order that arrived damaged. The package was delivered yesterday, but the screen is cracked. I would like refund or replacement as soon as possible. The order number is A. X19. 75 you can reach me at john.mit and example.com. Also, my phone number is 555. 0-1. by nine. Thank you."
+}
