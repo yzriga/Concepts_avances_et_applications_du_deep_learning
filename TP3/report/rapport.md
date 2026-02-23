@@ -133,3 +133,21 @@ Seule différence notable : "arrived damaged" -> "arrived. Demaged", la pause pr
 
 ---
 ## Exercice 7: Intégration : pipeline end-to-end + rapport d’ingénierie (léger)
+
+### Exécution de run_pipeline.py (PIPELINE SUMMARY)
+
+![alt text](img/image-15.png)
+
+### Contenu de pipeline_summary_call_01.json
+
+![alt text](img/image-16.png)
+
+### Engineering note
+
+**Goulet d'étranglement principal (temps) :** L'étape ASR (Whisper) est la plus coûteuse en temps brut : ~4.7 s pour ~35 s d'audio (RTF = 0.135 sur H100 avec modèle déjà en cache). La TTS est la plus rapide (RTF = 0.084, ~0.74 s pour 8.88 s d'audio). Sur CPU, le RTF ASR dépasse facilement 1 et bloque tout pipeline temps réel. Le chargement initial des modèles (~2–3 s chacun) est le vrai goulet lors du premier appel ; en production, il doit être amorti en chargeant les modèles une fois au démarrage du service.
+
+**Étape la plus fragile (qualité) :** L'ASR sur les séquences épedrées (ordre, email, téléphone) est le maillon faible. Whisper fragmente les tokens dictés lettre par lettre à travers les coupures VAD ("AX19735" -> "A." / "X19." / "75"), ce qui rend la redaction PII en aval quasiment impossible sans post-traitement spécifique. La qualité de la transcription dépend directement de la qualité de la segmentation VAD.
+
+**Deux améliorations concrètes pour l'industrialisation :**
+1. **Contrôle de longueur des segments VAD** : fusionner les segments courts (< 1 s) avec le segment précédent avant l'ASR, pour éviter la fragmentation des tokens épelés et améliorer la transcription des identifiants structurés.
+2. **Normalisation texte renforcée avant redaction PII** : appliquer une étape de normalisation des nombres écrits en lettres (digit-word -> chiffres) et de décomposition des acronymes épelés (détection de suites de lettres isolées) pour augmenter le rappel de la redaction sans réentraîner de modèle.
