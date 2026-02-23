@@ -106,9 +106,30 @@ Les erreurs les plus critiques concernent les informations structurées comme le
 ---
 ## Exercice 6: TTS léger : générer une réponse “agent” et contrôler latence/qualité
 
+### Exécution de tts_reply.py
 
+![alt text](img/image-12.png)
 
+### Métadonnées du WAV généré
 
+![alt text](img/image-13.png)
+
+### Observation qualité TTS
+
+Le modèle `facebook/mms-tts-eng` produit une synthèse globalement intelligible : toutes les phrases sont prononcées dans le bon ordre et les mots courants sont bien articulés. La prosodie est plate et uniforme (rythme monotone sans accentuation émotionnelle). Une rupture parasite est perceptible entre "arrived" et "damaged" : Whisper a transcrit "arrived. Demaged" au lieu de "arrived damaged", trahissant soit une micro-pause soit une légère misprononciation du mot par le modèle TTS. Aucun artefact métallique notable n'est détecté. Avec un RTF de **0.492**, la génération prend ~4 s pour 8.5 s d'audio (~2× plus rapide que le temps réel), ce qui est compatible avec une utilisation en production quasi-temps réel.
+
+### Vérification intelligibilité via ASR
+
+![alt text](img/image-14.png)
+
+**Comparaison source / ASR :**
+
+| | Texte |
+|---|---|
+| **Source** | Thanks for calling. I am sorry your order arrived **damaged**. I can offer a replacement or a refund. Please confirm your preferred option. |
+| **ASR (Whisper-small)** | Thanks for calling. I am sorry your order arrived. **Demaged**, I can offer a replacement or a refund. Please confirm your preferred option. |
+
+Seule différence notable : "arrived damaged" -> "arrived. Demaged", la pause prosodique introduite par le TTS a trompé Whisper, qui a coupé la phrase et retranscrit "damaged" en "Demaged". Tous les autres mots sont correctement retranscrits, ce qui confirme une intelligibilité élevée.
 
 ---
 ## Exercice 7: Intégration : pipeline end-to-end + rapport d’ingénierie (léger)
