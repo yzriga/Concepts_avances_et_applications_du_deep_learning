@@ -72,3 +72,43 @@ La segmentation VAD aide globalement la transcription : les segments longs (0–
 
 ---
 ## Exercice 5: Call center analytics : redaction PII + intention + fiche appel
+
+### Résultats de l'exécution initiale
+
+![alt text](img/image-7.png)
+
+![alt text](img/image-8.png)
+
+![alt text](img/image-9.png)
+
+### Post-traitement amélioré
+
+![alt text](img/image-10.png)
+
+![alt text](img/image-11.png)
+
+### Comparaison v1 / v2
+
+| Métrique | v1 (sans post-traitement) | v2 (avec post-traitement) |
+|----------|--------------------------|--------------------------|
+| `emails` | 0 | 0 |
+| `phones` | 0 | 0 |
+| `orders` | — | 1 |
+| `intent` | delivery_issue | delivery_issue |
+| `delivery_issue` score | 6 | 7 |
+
+**Progrès v2 :** le numéro de commande est maintenant détecté (`orders: 1`) grâce au pattern contextuel `"order number is ..."`. L'email et le téléphone restent non détectés : Whisper a trop altéré leur forme ("john.mit and example.com", "0-1.", "by nine.") pour que même le post-traitement puisse les rattraper.
+
+### Réflexion
+
+Les erreurs les plus critiques concernent les informations structurées comme le numéro de commande, l’email ou le téléphone, surtout lorsqu’elles sont dictées caractère par caractère, ce qui les rend difficiles à exploiter sans correction automatique. L’intention du message est en général mieux reconnue, car les mots-clés importants comme “refund” ou “damaged” sont correctement transcrits. Cependant, si deux catégories ont le même score, un seul mot-clé manquant peut inverser la décision. Cela montre la fragilité d’un système basé uniquement sur le comptage de mots. En production, il faut donc pondérer les mots selon leur impact métier, car rater une demande de remboursement est bien plus grave qu’une erreur sur un simple “thank you”.
+
+---
+## Exercice 6: TTS léger : générer une réponse “agent” et contrôler latence/qualité
+
+
+
+
+
+---
+## Exercice 7: Intégration : pipeline end-to-end + rapport d’ingénierie (léger)
