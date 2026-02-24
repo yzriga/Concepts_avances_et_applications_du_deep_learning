@@ -63,9 +63,25 @@ En contrepartie, chaque mise à jour du gradient est calculée sur un sous-ensem
 Sur Cora (petit graphe), le bénéfice en temps est limité et la performance peut légèrement baisser par rapport au GCN full-batch. L’intérêt du sampling se manifeste surtout à grande échelle où le full-batch est infaisable en mémoire.
 
 ---
-## Exercice 5: Benchmarks ingénieur : temps d’entraînement et latence d’inférence (CPU/GPU)
+## Exercice 5 : Benchmarks ingénieur : temps d’entraînement et latence d’inférence (CPU/GPU)
 
+### Résultats benchmark inférence
 
+![alt text](img/image-8.png)
+
+| Modèle    | test_acc   | test_f1    | total_train_time_s | avg_forward_ms |
+|-----------|------------|------------|--------------------|----------------|
+| MLP       | 0.5740     | 0.5634     | 0.64 s             | **0.059 ms**   |
+| GCN       | **0.8030** | **0.7982** | 1.02 s             | 1.453 ms       |
+| GraphSAGE | 0.7350     | 0.7238     | 1.42 s             | 0.393 ms       |
+
+### Explication
+
+Le GPU exécute les kernels de façon asynchrone : lorsque Python appelle `model(x)`, il enfile le travail dans une file CUDA et rend la main immédiatement, sans attendre la fin du calcul. Si on mesure le temps avec `perf_counter()` sans synchronisation, on capture uniquement la latence de lancement (quelques microsecondes), et non le temps de calcul réel.
+
+`torch.cuda.synchronize()` avant et après le forward force le CPU à attendre que tous les kernels GPU soient terminés avant de lire le chrono. La mesure reflète alors le temps effectif de calcul.
+
+Le warmup (ici 10 itérations) est nécessaire pour deux raisons : (1) au premier appel, CUDA compile les kernels à la volée (JIT) et chauffe le cache L2 GPU, ce qui prend bien plus longtemps que les appels suivants ; (2) le système d'exploitation peut introduire des délais de scheduling lors des premières allocations mémoire. Sans warmup, la première mesure serait un fort outlier qui biaiserait la moyenne. En pratique, 10 warmups suffisent sur Cora ; sur des modèles plus lourds on en ferait davantage.
 
 ---
 ## Exercice 6: Synthèse finale : comparaison, compromis, et recommandations ingénieur

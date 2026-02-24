@@ -152,6 +152,19 @@ def main() -> None:
     train_loop_time = time.time() - train_start
     print(f"train_loop_time={train_loop_time:.4f}")
 
+    # --- Checkpoint ---
+    import os
+    runs_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "runs")
+    os.makedirs(runs_dir, exist_ok=True)
+    ckpt_path = os.path.join(runs_dir, f"{args.model}.pt")
+    payload = {
+        "model": args.model,
+        "config_path": args.config,
+        "state_dict": model.state_dict(),
+    }
+    torch.save(payload, ckpt_path)
+    print("checkpoint_saved:", ckpt_path)
+
 
 if __name__ == "__main__":
     main()
