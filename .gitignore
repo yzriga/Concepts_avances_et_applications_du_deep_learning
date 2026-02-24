@@ -8,5 +8,5 @@ TP1/models/sam_vit_*
 # local dataset cache (downloaded by PyG)
 TP4/data/
 
-# TP4 — model checkpoints (not versioned)
+# model checkpoints (not versioned)
 TP4/runs/
