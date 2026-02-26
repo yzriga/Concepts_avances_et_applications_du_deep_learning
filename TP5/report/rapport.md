@@ -48,21 +48,32 @@ L'agent radin a appris une politique remarquablement simple : **ne jamais allume
 
 **Explication mathématique et logique du Reward Hacking :**
 
-L'objectif de l'agent PPO est de maximiser le retour cumulé espéré :
+Le Reward Hacking se produit lorsqu’un agent d’apprentissage par renforcement optimise parfaitement la fonction de récompense qu’on lui donne, mais que cette récompense ne reflète pas correctement l’objectif réel. L’agent ne cherche pas à “réussir la mission” au sens humain du terme : il cherche uniquement à accumuler le maximum de points selon les règles définies.
 
-$$G_t = \sum_{k=0}^{T} \gamma^k r_{t+k}$$
+Dans ce cas, on ajoute une forte pénalité chaque fois que le moteur principal est utilisé. Or un atterrissage contrôlé nécessite de nombreux allumages pour ralentir la descente. La somme des pénalités liées au carburant devient alors énorme, au point de dépasser largement la récompense obtenue pour un atterrissage réussi. À l’inverse, si l’agent décide de ne jamais utiliser le moteur principal, il évite toute pénalité carburant et ne subit que la pénalité du crash, qui est beaucoup plus faible que le coût cumulé des allumages.
 
-Dans l'environnement modifié, la fonction de récompense devient :
-
-$$r'(s, a) = r(s, a) - 50 \cdot \mathbf{1}[a = 2]$$
-
-Comparons les deux stratégies possibles sous cette récompense :
-
-- **Atterrir proprement** (comme le PPO normal) : ~394 allumages principaux × (-50) = **-19 700 pts** de pénalité carburant + récompense d'atterrissage → bilan catastrophique.
-- **Se laisser tomber** (0 allumage principal) : pénalité carburant = **0**, coût du crash = -100 pts → bilan = ~**-99 pts**.
-
-L'agent apprend donc que $\arg\max_{a} \mathbb{E}[G_t]$ sous $r'$ correspond à ne jamais utiliser $a=2$, même si cela garantit un crash. La pénalité de -50 par allumage est tellement disproportionnée que **2 allumages principaux coûtent déjà plus cher que le crash lui-même** (-100 pts). La solution est rationnellement optimale vis-à-vis de $r'$ mais totalement aberrante vis-à-vis de l'objectif réel. C'est la définition exacte du **Reward Hacking** : l'agent exploite une faille dans la spécification de la récompense plutôt que d'apprendre le comportement désiré.
+L’agent apprend donc qu’il est plus rentable de se laisser tomber que d’essayer d’atterrir proprement. Ce choix est parfaitement rationnel vis-à-vis de la récompense modifiée, mais totalement contraire à l’objectif réel du problème. C’est précisément cela le Reward Hacking : l’agent exploite un défaut dans la définition de la récompense et adopte un comportement qui maximise les points sans accomplir la tâche attendue.
 
 ---
 ## Exercice 4 : Robustesse et Changement de Physique (Généralisation OOD)
 
+### Rapport de vol OOD et analyse
+
+![Agent PPO OOD](../ood_agent.gif)
+
+![alt text](img/image-4.png)
+
+**Comportement observé :**
+
+L'agent ne crashe pas, mais **n'atterrit jamais non plus** : l'épisode est tronqué au bout de **1000 frames** (limite maximale). Le vaisseau flotte indéfiniment, incapable de se poser. Par rapport au PPO en gravité nominale, le profil d'actions est radicalement différent : beaucoup moins de moteur principal (107 vs 394) mais bien plus de moteurs latéraux (528 vs 453), trahissant une politique qui tente frénétiquement de se stabiliser latéralement sans jamais réussir à descendre correctement.
+
+**Explication technique de l'échec OOD :**
+
+La politique PPO a été entraînée avec une gravité de -10 et a donc appris une dynamique adaptée à cette physique précise. Quand on réduit la gravité à -2, l’environnement change fortement et les observations ne correspondent plus à celles vues pendant l’entraînement : on se retrouve en situation hors distribution.
+
+L’agent continue d’utiliser le moteur principal selon les mêmes règles qu’avant, mais comme la gravité est beaucoup plus faible, chaque poussée devient trop puissante. Au lieu de ralentir la descente, le vaisseau remonte, puis redescend, créant des oscillations. Il finit par rester en vol stationnaire presque indéfiniment, accumulant des points sans jamais atterrir.
+
+Pour corriger cela, il faut soit réentraîner l’agent avec la nouvelle gravité, soit l’entraîner avec plusieurs niveaux de gravité pour le rendre plus robuste aux changements.
+
+---
+## Exercice 5: Bilan Ingénieur : Le défi du Sim-to-Real
