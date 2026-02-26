@@ -77,3 +77,11 @@ Pour corriger cela, il faut soit réentraîner l’agent avec la nouvelle gravit
 
 ---
 ## Exercice 5: Bilan Ingénieur : Le défi du Sim-to-Real
+
+### Stratégies pour la robustesse au Sim-to-Real Gap
+
+L'Exercice 4 a montré qu'un agent entraîné avec une gravité fixe échoue dès que les conditions physiques changent. Voici deux stratégies concrètes pour corriger cela.
+
+**Stratégie 1 — Domain Randomisation :** Au lieu de toujours entraîner avec la même gravité et le même vent, on les tire aléatoirement à chaque épisode sur un intervalle large couvrant les conditions réelles d'intérêt. L'agent est alors forcé de trouver une politique qui fonctionne dans tous ces contextes plutôt que de mémoriser une seule physique. C'est la méthode la plus simple à mettre en place : il suffit de modifier l'environnement au moment du reset, par exemple via un wrapper Gymnasium qui recrée l'environnement avec des paramètres aléatoires.
+
+**Stratégie 2 — Injection du contexte physique :** On ajoute la valeur de gravité (et de vent) directement dans l'observation fournie à l'agent. Ainsi, au lieu de deviner implicitement la physique à partir de la trajectoire, l'agent dispose d'un "capteur de physique" explicite et peut adapter son comportement en conséquence, comme un pilote qui consulte ses instruments avant de manœuvrer. Cette approche nécessite de pouvoir mesurer ces paramètres au déploiement, mais donne d'excellents résultats de généralisation.
