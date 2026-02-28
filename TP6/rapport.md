@@ -6,19 +6,19 @@
 
 **normal_1.jpeg :**
 
-![Grad-CAM normal_1](../gradcam_normal_1.png)
+![Grad-CAM normal_1](gradcam_normal_1.png)
 
 **normal_2.jpeg :**
 
-![Grad-CAM normal_2](../gradcam_normal_2.png)
+![Grad-CAM normal_2](gradcam_normal_2.png)
 
 **pneumo_1.jpeg :**
 
-![Grad-CAM pneumo_1](../gradcam_pneumo_1.png)
+![Grad-CAM pneumo_1](gradcam_pneumo_1.png)
 
 **pneumo_2.jpeg :**
 
-![Grad-CAM pneumo_2](../gradcam_pneumo_2.png)
+![Grad-CAM pneumo_2](gradcam_pneumo_2.png)
 
 ### Analyse des Faux Positifs et effet Clever Hans
 
@@ -37,11 +37,11 @@ Les cartes générées présentent des blocs flous de basse résolution, même a
 
 **normal_1.jpeg :**
 
-![IG SmoothGrad normal_1](../ig_smooth_normal_1.png)
+![IG SmoothGrad normal_1](ig_smooth_normal_1.png)
 
 **pneumo_1.jpeg :**
 
-![IG SmoothGrad pneumo_1](../ig_smooth_pneumo_1.png)
+![IG SmoothGrad pneumo_1](ig_smooth_pneumo_1.png)
 
 ### Temps de calcul et faisabilité temps réel
 
@@ -66,7 +66,7 @@ Integrated Gradients produit des attributions signées: les valeurs positives si
 
 Accuracy de la régression logistique : **0.9737** (97.4% sur le jeu de test).
 
-![Coefficients Régression Logistique](../glassbox_coefficients.png)
+![Coefficients Régression Logistique](glassbox_coefficients.png)
 
 ### Feature la plus importante pour la classe "Maligne"
 
@@ -84,11 +84,11 @@ Contrairement aux méthodes post-hoc (Grad-CAM, Integrated Gradients) qui génè
 
 **Summary Plot (importance globale) :**
 
-![SHAP Summary Plot](../shap_summary.png)
+![SHAP Summary Plot](shap_summary.png)
 
 **Waterfall Plot - Patient 0 (importance locale) :**
 
-![SHAP Waterfall Plot](../shap_waterfall.png)
+![SHAP Waterfall Plot](shap_waterfall.png)
 
 ### Explicabilité Globale : comparaison RF (SHAP) vs Régression Logistique
 
